@@ -75,7 +75,7 @@ global coord centelem elem esurn1 esurn2 nsurn1 nsurn2 bedge inedge ...
 %bedge(128:192,2)=x;
 %%
 tic
-%% escolha o m�todo de interpola��o
+%% escolha o metodo de interpolacao
 % 1-->LPEW1 Gao e Wu 2010
 % 2-->LPEW2 Gao e Wu 2010
 interptype=2;

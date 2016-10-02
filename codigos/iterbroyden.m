@@ -1,25 +1,25 @@
 function [p,step,errorelativo,flowrate,flowresult]=iterbroyden(M_old,RHS_old,p_old,tolnewton,kmap,parameter,...
     metodoP,auxflag,w,s,nflag,fonte,gamma,nflagno,benchmark,R0_old,p_old1,weightDMP,auxface)
 
-%% inicializando dados para iteração Picard
+%% inicializando dados para iteraï¿½ï¿½o Picard
 R0=M_old*p_old-RHS_old;
 er=1;
 step=0;
 neta=1;
 %Br=eye(size(p_old,1),size(p_old,1));
-% primeira aproximação vai pela matriz Jacobiana
+% primeira aproximaï¿½ï¿½o vai pela matriz Jacobiana
 [Br]=aproxmjacobian(R0,p_old1,p_old,nflag,w,s,metodoP,parameter,kmap,nflagno,benchmark,fonte,auxflag,gamma,weightDMP,auxface);
 
 while tolnewton<er
     step=step+1;
-    % calculo da pressão
+    % calculo da pressï¿½o
     sk=-inv(Br)*(R0_old);
     p_new=p_old1+sk;
     % plotagem no visit
     postprocessor(p_new,step)
-    % Interpolação das pressões na arestas (faces)
+    % Interpolaï¿½ï¿½o das pressï¿½es na arestas (faces)
     [pinterp_new]=pressureinterp(p_new,nflag,w,s,auxflag,metodoP,parameter,weightDMP);
-    
+
     % Calculo da matriz global
     [M_new,RHS_new]=globalmatrix(p_new,pinterp_new,gamma,nflag,nflagno...
         ,parameter,kmap,fonte,metodoP,w,benchmark,weightDMP,auxface);
@@ -37,7 +37,7 @@ while tolnewton<er
         %Br=oldBr-((oldBr*sk*sk'*oldBr)/(sk'*oldBr*sk))+ (yk*yk')/(yk'*sk);
         % the DFP formule
         %Br=(I-(yk*sk')/(yk'*sk))*oldBr*(I-(yk*sk')/(yk'*sk))'+(yk*yk')/(yk'*sk);
-        
+
     else
         Br=oldBr;
     end
@@ -51,7 +51,7 @@ while tolnewton<er
     A=logical(norm(R0) ~= 0.0);
     B=logical(norm(R0) == 0.0);
     er=A*abs(norm(R0_new)/norm(R0))+B*0
-    
+
     errorelativo(step)=er;
     R0_old=R0_new;
     p_old1=p_new;
@@ -59,10 +59,10 @@ end
 p=p_old1;
 pinterp=pressureinterp(p,nflag,w,s,auxflag,metodoP,parameter,weightDMP);
 if strcmp(metodoP,'nlfvDMPSY')
-% implementação do fluxo NLFV-DMP
+% implementaï¿½ï¿½o do fluxo NLFV-DMP
     [flowrate,flowresult]=flowrateNLFVDMP(p, pinterp, parameter,nflag,kmap,gamma,weightDMP);
 else
-% implementação do fluxo NLFV
+% implementaï¿½ï¿½o do fluxo NLFV
     [flowrate,flowresult]=flowrateNLFV(p, pinterp, parameter);
 end
 end
