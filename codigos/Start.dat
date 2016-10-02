@@ -14,7 +14,7 @@
 
 //Do you have a mesh file? [y] ==> "yes"; [n] ==> "no"
 
-y
+n
 
 //If [y] write, immediately below, only the name of mesh file with
 //extension *.msh:
@@ -33,7 +33,7 @@ C:\Users\Fernando\Documents\GitHub\localsimulator\malhas
 //IMPORTANT: gmsh.exe must be puted in this folder together with
 //the *.m files. Otherwise it does not work.
 
-C:\Users\flc59_000\Desktop\simulador_beta_27_11_2015\two_phase_nlfv
+C:\Users\Fernando\Documents\GitHub\localsimulator\malhas
 
 //write the name of BASE geometry file WITHOUT extension *.geo.
 //This file can serve to several simulations. Each one may have
@@ -369,7 +369,7 @@ porosity.dat
 //declared below and so on.
 
 1
-101 0
+201 0
 
 //--------------------------------------------------------------------
 //Tratment of boundary points
@@ -386,7 +386,7 @@ porosity.dat
 //below.
 
 1
-101
+201
 
 //--------------------------------------------------------------------
 //----------------------- Convergence criteria -----------------------
@@ -464,6 +464,6 @@ vpi
 //if you write down "0" replacing the number of wells, will be not
 //necessary to erase the numbers below it. Keep it to reference.
 
-0
+2
 0 0 0 0.05 301 1 0 1 1
 0 1 1 0.05 0 0 501 1 1
