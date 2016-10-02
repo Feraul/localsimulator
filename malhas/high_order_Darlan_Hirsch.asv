@@ -1,0 +1,125 @@
+function [S_old] = high_order_Darlan_Hirsch(S_old,influx,dt,esuel,q,f_elem,S_cont,w,bound,FF,nw,no,wells,f_cont)
+global elemarea satlimit inedge visc centelem elem bedge pormap bcflag
+% c: baricentro da célula
+% gradient in element
+[Sat_max_min]=Saturation_max_min(S_old);
+
+[g]=grad(S_old,w,esuel,elem,bcflag,bedge,bound);
+
+RHS = zeros(size(S_old,1),1);
+
+for i = 1:size(inedge,1)
+        
+    outro=inedge(i,4);    %indice do elemento a direita da face i
+    aqui=inedge(i,3);    %indice do elemento a esquerda da face i
+    por=pormap(1);
+    
+    S_aqui = S_old(aqui);
+    S_outro = S_old(outro);
+          
+    % gradiente local centrada
+    r_outro = (centelem(aqui,:)-centelem(outro,:))';
+    gradS_cent_outro = S_aqui - S_outro; % OK
+    
+    prod_outro=dot(g(outro,:)',r_outro);
+    
+    gradS_upwind_outro = 2*prod_outro - gradS_cent_outro; % OK
+    
+    
+    r_aqui = (centelem(outro,:)-centelem(aqui,:))';
+    gradS_cent_aqui = S_outro - S_aqui; % OK
+    
+    prod_aqui=dot(g(aqui,:)',r_aqui);
+    
+    gradS_upwind_aqui = 2*prod_aqui - gradS_cent_aqui; % OK
+
+
+    
+     %[gradS_cent_aqui,gradS_upwind_aqui,gradS_cent_outro,gradS_upwind_outro]=calculgradUpCent(aqui,outro,g,S_old);
+
+    
+    e=1e-16;
+    % Saturation on point D
+    
+    limit1= max(0,(2*gradS_upwind_aqui*gradS_cent_aqui+ e)/(gradS_upwind_aqui^2 +gradS_cent_aqui^2 + e ));
+    
+    k=1/3;
+    delta=0.05;
+    limit2= max(0,(2*gradS_upwind_outro*gradS_cent_outro+ e)/(gradS_upwind_outro^2 +gradS_cent_outro^2+e ));
+    
+     %SD_L = S_aqui + limit1*0.25*((1-k)*gradS_upwind_aqui+(1+k)*gradS_cent_aqui);
+     %SD_R = S_outro + limit2*0.25*((1-k)*gradS_upwind_outro+(1+k)*gradS_cent_outro);
+    
+     %%      
+     if Sat_max_min(outro,1)-Sat_max_min(outro,2)<=1e-20
+         phi_outro= 1;
+     else
+         gamma_outro= (S_old(outro)-Sat_max_min(outro,2))/(Sat_max_min(outro,1)-Sat_max_min(outro,2));
+         if gamma_outro >=1 | gamma_outro<=0
+             phi_outro=0;
+         elseif delta<= gamma_outro && gamma_outro<=1-delta
+             phi_outro=1;
+         elseif 0< gamma_outro && gamma_outro< delta
+             phi_outro=gamma_outro/delta;
+         elseif 1-delta < gamma_outro && gamma_outro<1
+             phi_outro=(1-gamma_outro)/delta;
+         end
+     end
+     
+     if Sat_max_min(aqui,1)-Sat_max_min(aqui,2)<=1e-20
+         phi_aqui= 1;
+     else
+         gamma_aqui= (S_old(aqui)-Sat_max_min(aqui,2))/(Sat_max_min(aqui,1)-Sat_max_min(aqui,2));
+         if gamma_aqui >=1 | gamma_aqui<=0
+             phi_aqui=0;
+         elseif delta<= gamma_aqui && gamma_aqui<=1-delta
+             phi_aqui=1;
+         elseif 0< gamma_aqui && gamma_aqui< delta
+             phi_aqui=gamma_aqui/delta;
+         elseif 1-delta< gamma_aqui && gamma_aqui<1
+             phi_aqui=(1-gamma_aqui)/delta;
+         end
+     end
+     
+    SD_L = S_aqui  + phi_aqui*limit1*0.25*((1-k)*gradS_upwind_aqui+(1+k)*gradS_cent_aqui);
+    SD_R = S_outro + phi_outro* limit2*0.25*((1-k)*gradS_upwind_outro+(1+k)*gradS_cent_outro);
+    %%
+    
+    [fe_L] = flow_fract(SD_L,nw,no); % f(SM_L)
+    
+    [fe_R] = flow_fract(SD_R,nw,no); % f(SM_R)
+    
+    ve_mais = (influx(i+size(bedge,1)) + abs(influx(i+size(bedge,1))))/2;
+    ve_menos = (influx(i+size(bedge,1)) - abs(influx(i+size(bedge,1))))/2;
+    
+    RHS(outro) = RHS(outro) + ve_mais*fe_L + ve_menos*fe_R;
+    RHS(aqui)  = RHS(aqui)  - ve_mais*fe_L - ve_menos*fe_R;
+    
+end
+
+%% aproximação upwind no contorno
+for i = 1:size(bedge,1)
+    lef=bedge(i,3);
+    if bedge(i,5)==auxflag
+        RHS(lef) = RHS(lef) - (f_cont(i)*influx(i));
+    elseif bedge(i,5)<200
+       
+        RHS(bedge(i,3)) = RHS(bedge(i,3)) - f_elem(bedge(i,3))*influx(i); 
+    end
+end
+%% calculo dos RHS nos poços produtores
+if max(wells)~=0
+    for i=1:size(wells,1)
+        if wells(i,2)==2
+            
+            RHS(wells(i,1)) = RHS(wells(i,1)) + f_elem(wells(i,1))*q(wells(i,1));
+        end
+    end
+end
+
+for i = 1:size(S_old,1)
+    
+    S_old(i,1) = S_old(i,1) + (dt*RHS(i))/(por*elemarea(i));
+    
+end
+end
