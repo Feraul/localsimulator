@@ -26,7 +26,7 @@ five_spot_Aligened_24_24.msh
 //IMPORTANT: if the file is puted into folder which contain the *.m
 //files, write in the statment below "no path".
 
-C:\Users\Fernando\Documents\GitHub\localsimulator\malhas
+C:\Users\Fernando\Documents\GitHub\localsimulator
 
 //If [n] write, immediately below, the path which conduct to
 //folder where the *.m files is:

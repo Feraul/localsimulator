@@ -213,11 +213,11 @@ while vpi_old < vpi
     vpi_old=VPI(cont)
 
     %visualizacao
-    if vpi_old >= time2
-       step = 1000*time2;
-       postprocessor(p,S_old,step)
-      time2 = time2 + 0.01;
-    end
+    %if vpi_old >= time2
+    %   step = 1000*time2;
+    %   postprocessor(p,S_old,step)
+    %  time2 = time2 + 0.01;
+    %end
     % armezena a producao em arquivo .dat
     fprintf(fid3,'%13.3e %13.3e %13.3e %13.3e \n',VPI(cont), ...
        oilrecovery(cont),cumulateoil(cont),watercut(cont));
