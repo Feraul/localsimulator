@@ -23,6 +23,7 @@ for No=1:size(coord,1)
     % calcula os lambdas
     [ lambda,r ] =  Lamdas_Weights_LPEW2( Kt1, Kt2, Kn1, Kn2, theta1,...
         theta2, ve1, ve2, neta, P, O,Qo,No,T,r );
+    % pode ser vetorizado segundo a ideia de Braian
     for k=0:size(O,1)-1,
         w(apw(No)+k)=lambda(k+1)/sum(lambda); %Os pesos fazem sentido
     end
