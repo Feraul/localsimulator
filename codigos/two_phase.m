@@ -48,7 +48,7 @@ global coord centelem elem esurn1 esurn2 nsurn1 nsurn2 bedge inedge ...
 %bedge(135:150,4:5)=102; % 36x36
 %bcflag(2,1)=102;
 %bcflag(2,2)=2;
-%% Modificação Malha Kershaw
+%% Kershaw Mesh Modification
 %bedge(:,4:5)=101;
 %----------------------------
 %% tratamento malha Hermeline
