@@ -7,7 +7,15 @@ R=[0 1 0; -1 0 0;0 0 0];
 for ifacont=1:size(bedge,1)
     
     lef=bedge(ifacont,3);
-    klef=elementype(lef);
+    %klef=elementype(lef);
+    % calcula se o elemento é triangulo ou quadrilatero
+    klef=0;
+    for i=1:size(elem,2)-1
+        
+        if elem(lef,i)~=0
+            klef=klef+1;
+        end
+    end
     
     IJ=coord(bedge(ifacont,2),:)-coord(bedge(ifacont,1),:);
     normIJ=norm(IJ);
@@ -30,21 +38,22 @@ for ifacont=1:size(bedge,1)
             no2=auxvetor(1);
             vj=coord(no2,:)-centelem(lef,:);
             % Estes condições evitam que o acos seja numero complexo.
-            if dot(vj,ve2)/(norm(vj)*norm(ve2))>1 && abs(1-dot(vj,ve2)/(norm(vj)*norm(ve2)))<1e-10
+            if (vj*ve2)/(norm(vj)*norm(ve2))>1 && abs(1-(vj*ve2)/(norm(vj)*norm(ve2)))<1e-10
                 thetalef2=acos(1);
             else
-                thetalef2=acos( dot(vj,ve2)/(norm(vj)*norm(ve2)));
+                thetalef2=acos((vj*ve2)/(norm(vj)*norm(ve2)));
             end
             vi=coord(no1,:)-centelem(lef,:);
             % analiza que o K.n pertece ao primeiro quadrante
             auxquadrant1= cross(vj,ve2);
-            auxquadrant2= cross(ve2,vi);
+           
+            auxquadrant2= cross(ve2,vi); % Analizar .... !!!!!
             % evita que aparição de numeros complexos
-            if dot(vi,ve2)/(norm(vi)*norm(ve2))>1 && abs(1-dot(vi,ve2)/(norm(vi)*norm(ve2)))<1e-10
+            if (vi*ve2)/(norm(vi)*norm(ve2))>1 && abs(1-(vi*ve2)/(norm(vi)*norm(ve2)))<1e-10
                 % calculo do theta1
                 thetalef1=acos(1);
             else
-                thetalef1=acos(dot(vi,ve2)/(norm(vi)*norm(ve2)));
+                thetalef1=acos((vi*ve2)/(norm(vi)*norm(ve2)));
             end
             if ((sign(auxquadrant1(1,3))==sign(auxquadrant2(1,3)) && (abs(auxquadrant1(1,3))>1e-16 || abs(auxquadrant2(1,3))>1e-16))||(sign(auxquadrant1(1,3))==0 && sign(auxquadrant2(1,3))>0)||...
                     (sign(auxquadrant1(1,3))>0 && sign(auxquadrant2(1,3))==0)) && ((thetalef2 + thetalef1)<pi)
@@ -75,21 +84,23 @@ for ifacont=1:size(bedge,1)
             no2=auxvetor(j+1);
             vj= coord(no2,:)-centelem(lef,:);
             % Estes condições evitam que o acos seja numero complexo.
-            if dot(vj,ve2)/(norm(vj)*norm(ve2))>1 && abs(1-dot(vj,ve2)/(norm(vj)*norm(ve2)))<1e-10
+            if (vj*ve2)/(norm(vj)*norm(ve2))>1 && abs(1-dot(vj,ve2)/(norm(vj)*norm(ve2)))<1e-10
                 thetalef2=acos(1);
             else
-                thetalef2=acos( dot(vj,ve2)/(norm(vj)*norm(ve2)));
+                thetalef2=acos((vj*ve2)/(norm(vj)*norm(ve2)));
             end
             vi= coord(no1,:)-centelem(lef,:);
             % analiza que o K.n pertece ao primeiro quadrante
             auxquadrant1= cross(vi,ve2);
-            auxquadrant2= cross(ve2,vj);
+            
+            auxquadrant2= cross(ve2,vj); 
+            
             % evita que aparição de numeros complexos
-            if dot(vi,ve2)/(norm(vi)*norm(ve2))>1 && abs(1-dot(vi,ve2)/(norm(vi)*norm(ve2)))<1e-10
+            if (vi*ve2)/(norm(vi)*norm(ve2))>1 && abs(1-(vi*ve2)/(norm(vi)*norm(ve2)))<1e-10
                 % calculo do theta1
                 thetalef1=acos(1);
             else
-                thetalef1=acos(dot(vi,ve2)/(norm(vi)*norm(ve2)));
+                thetalef1=acos((vi*ve2)/(norm(vi)*norm(ve2)));
             end
             if ((sign(auxquadrant1(1,3))==sign(auxquadrant2(1,3)) && (abs(auxquadrant1(1,3))>1e-16 || abs(auxquadrant2(1,3))>1e-16))||(sign(auxquadrant1(1,3))==0 && sign(auxquadrant2(1,3))>0)||...
                     (sign(auxquadrant1(1,3))>0 && sign(auxquadrant2(1,3))==0)) && ((thetalef2 + thetalef1)<pi)
@@ -125,8 +136,25 @@ end
 for iface=1:size(inedge,1)
     lef=inedge(iface,3);
     rel=inedge(iface,4);
-    klef=elementype(lef);
-    krel=elementype(rel);
+    
+    klef=0;
+    for i=1:size(elem,2)-1
+        
+        if elem(lef,i)~=0
+            klef=klef+1;
+        end
+    end
+    
+    %klef=elementype(lef);
+    %krel=elementype(rel);
+    
+    krel=0;
+    for i=1:size(elem,2)-1
+        
+        if elem(rel,i)~=0
+            krel=krel+1;
+        end
+    end
     
     IJ=coord(inedge(iface,2),:)-coord(inedge(iface,1),:);
     normIJ=norm(coord(inedge(iface,2),:)-coord(inedge(iface,1),:));
@@ -159,21 +187,23 @@ for iface=1:size(inedge,1)
             vj=coord(no2,:)-centelem(lef,:);
             
             % Estes condições evitam que o acos seja numero complexo.
-            if dot(vj,ve2)/(norm(vj)*norm(ve2))>1 && abs(1-dot(vj,ve2)/(norm(vj)*norm(ve2)))<1e-10
+            if (vj*ve2)/(norm(vj)*norm(ve2))>1 && abs(1-(vj*ve2)/(norm(vj)*norm(ve2)))<1e-10
                 thetalef2=acos(1);
             else
-                thetalef2=acos( dot(vj,ve2)/(norm(vj)*norm(ve2)));
+                thetalef2=acos((vj*ve2)/(norm(vj)*norm(ve2)));
             end
             vi=coord(no1,:)-centelem(lef,:);
             % analiza que o K.n pertece ao primeiro quadrante
-            auxquadrant1= cross(vj,ve2);
-            auxquadrant2= cross(ve2,vi);
+            %auxquadrant1= cross(vj,ve2);
+            auxquadrant1=[vj(2)*ve2(3)-vj(3)*ve2(2),vj(3)*ve2(1)-vj(1)*ve2(3),vj(1)*ve2(2)-vj(2)*ve2(1)];
+            %auxquadrant2= cross(ve2,vi);
+            auxquadrant2= [ve2(2)*vi(3)-ve2(3)*vi(2),ve2(3)*vi(1)-ve2(1)*vi(3),ve2(1)*vi(2)-ve2(2)*vi(1)];
             % evita que aparição de numeros complexos
-            if dot(vi,ve2)/(norm(vi)*norm(ve2))>1 && abs(1-dot(vi,ve2)/(norm(vi)*norm(ve2)))<1e-10
+            if (vi*ve2)/(norm(vi)*norm(ve2))>1 && abs(1-(vi*ve2)/(norm(vi)*norm(ve2)))<1e-10
                 % calculo do theta1
                 thetalef1=acos(1);
             else
-                thetalef1=acos(dot(vi,ve2)/(norm(vi)*norm(ve2)));
+                thetalef1=acos((vi*ve2)/(norm(vi)*norm(ve2)));
             end
             if ((sign(auxquadrant1(1,3))==sign(auxquadrant2(1,3)) && (abs(auxquadrant1(1,3))>1e-16 || abs(auxquadrant2(1,3))>1e-16))||(sign(auxquadrant1(1,3))==0 && sign(auxquadrant2(1,3))>0)||...
                     (sign(auxquadrant1(1,3))>0 && sign(auxquadrant2(1,3))==0)) && ((thetalef2 + thetalef1)<pi)
@@ -204,21 +234,23 @@ for iface=1:size(inedge,1)
             no2=auxvetor(j+1);
             vj= coord(no2,:)-centelem(lef,:);
             % Estes condições evitam que o acos seja numero complexo.
-            if dot(vj,ve2)/(norm(vj)*norm(ve2))>1 && abs(1-dot(vj,ve2)/(norm(vj)*norm(ve2)))<1e-10
+            if (vj*ve2)/(norm(vj)*norm(ve2))>1 && abs(1-(vj*ve2)/(norm(vj)*norm(ve2)))<1e-10
                 thetalef2=acos(1);
             else
-                thetalef2=acos( dot(vj,ve2)/(norm(vj)*norm(ve2)));
+                thetalef2=acos((vj*ve2)/(norm(vj)*norm(ve2)));
             end
             vi= coord(no1,:)-centelem(lef,:);
             % analiza que o K.n pertece ao primeiro quadrante
-            auxquadrant1= cross(vj,ve2);
-            auxquadrant2= cross(ve2,vi);
+            %auxquadrant1= cross(vj,ve2);
+            auxquadrant1=[vj(2)*ve2(3)-vj(3)*ve2(2),vj(3)*ve2(1)-vj(1)*ve2(3),vj(1)*ve2(2)-vj(2)*ve2(1)];
+            %auxquadrant2= cross(ve2,vi);
+            auxquadrant2= [ve2(2)*vi(3)-ve2(3)*vi(2),ve2(3)*vi(1)-ve2(1)*vi(3),ve2(1)*vi(2)-ve2(2)*vi(1)];
             % evita que aparição de numeros complexos
-            if dot(vi,ve2)/(norm(vi)*norm(ve2))>1 && abs(1-dot(vi,ve2)/(norm(vi)*norm(ve2)))<1e-10
+            if (vi*ve2)/(norm(vi)*norm(ve2))>1 && (1-dot(vi*ve2)/(norm(vi)*norm(ve2)))<1e-10
                 % calculo do theta1
                 thetalef1=acos(1);
             else
-                thetalef1=acos(dot(vi,ve2)/(norm(vi)*norm(ve2)));
+                thetalef1=acos((vi*ve2)/(norm(vi)*norm(ve2)));
             end
             if ((sign(auxquadrant1(1,3))==sign(auxquadrant2(1,3)) && (abs(auxquadrant1(1,3))>1e-16 || abs(auxquadrant2(1,3))>1e-16))||(sign(auxquadrant1(1,3))==0 && sign(auxquadrant2(1,3))>0)||...
                     (sign(auxquadrant1(1,3))>0 && sign(auxquadrant2(1,3))==0)) && ((thetalef2 + thetalef1)<pi)
@@ -263,22 +295,24 @@ for iface=1:size(inedge,1)
             vj=coord(no2,:)-centelem(rel,:);
             
             % Estes condições evitam que o acos seja numero complexo.
-            if dot(vj,vetor12)/(norm(vj)*norm(vetor12))>1 && abs(1-dot(vj,vetor12)/(norm(vj)*norm(vetor12)))<1e-10
+            if (vj*vetor12)/(norm(vj)*norm(vetor12))>1 && abs(1-(vj*vetor12)/(norm(vj)*norm(vetor12)))<1e-10
                 % calculo do theta2
                 thetarel2=acos(1);
             else
-                thetarel2=acos( dot(vj,vetor12)/(norm(vj)*norm(vetor12)));
+                thetarel2=acos((vj*vetor12)/(norm(vj)*norm(vetor12)));
             end
             vi=coord(no1,:)-centelem(rel,:);
             % analiza que o K.n pertece ao primeiro quadrante
-            auxquadrant1= cross(vi,vetor12);
-            auxquadrant2= cross(vetor12,vj);
+            %auxquadrant1= cross(vi,vetor12);
+            auxquadrant1= [vi(2)*vetor12(3)-vi(3)*vetor12(2),vi(3)*vetor12(1)-vi(1)*vetor12(3),vi(1)*vetor12(2)-vi(2)*vetor12(1)];
+            %auxquadrant2= cross(vetor12,vj);
+            auxquadrant2= [vetor12(2)*vj(3)-vetor12(3)*vj(2),vetor12(3)*vj(1)-vetor12(1)*vj(3),vetor12(1)*vj(2)-vetor12(2)*vj(1)];
             % evita que aparição de numeros complexos
-            if dot(vi,vetor12)/(norm(vi)*norm(vetor12))>1 && abs(1-dot(vi,vetor12)/(norm(vi)*norm(vetor12)))<1e-10
+            if (vi*vetor12)/(norm(vi)*norm(vetor12))>1 && abs(1-(vi*vetor12)/(norm(vi)*norm(vetor12)))<1e-10
                 % calculo do theta1
                 thetarel1=acos(1);
             else
-                thetarel1=acos( dot(vi,vetor12)/(norm(vi)*norm(vetor12)));
+                thetarel1=acos((vi*vetor12)/(norm(vi)*norm(vetor12)));
                 
             end
             if ((sign(auxquadrant1(1,3))==sign(auxquadrant2(1,3)) && (abs(auxquadrant1(1,3))>1e-16 || abs(auxquadrant2(1,3))>1e-16))||(sign(auxquadrant1(1,3))==0 && sign(auxquadrant2(1,3))>0)||...
@@ -312,23 +346,27 @@ for iface=1:size(inedge,1)
             no2=auxvetor(j+1);
             vj=coord(no2,:)-centelem(rel,:);
             % Estes condições evitam que o acos seja numero complexo.
-            if dot(vj,vetor12)/(norm(vj)*norm(vetor12))>1 && abs(1-dot(vj,vetor12)/(norm(vj)*norm(vetor12)))<1e-10
+            if (vj*vetor12)/(norm(vj)*norm(vetor12))>1 && abs(1-(vj*vetor12)/(norm(vj)*norm(vetor12)))<1e-10
                 % calculo do theta2
                 thetarel2=acos(1);
             else
-                thetarel2=acos( dot(vj,vetor12)/(norm(vj)*norm(vetor12)));
+                thetarel2=acos((vj*vetor12)/(norm(vj)*norm(vetor12)));
             end
             
             vi= coord(no1,:)-centelem(rel,:);
             % analiza que o K.n pertece ao primeiro quadrante
-            auxquadrant1= cross(vi,vetor12);
-            auxquadrant2= cross(vetor12,vj);
+            %auxquadrant1= cross(vi,vetor12);
+            auxquadrant1= [vi(2)*vetor12(3)-vi(3)*vetor12(2),vi(3)*vetor12(1)-vi(1)*vetor12(3),vi(1)*vetor12(2)-vi(2)*vetor12(1)];
+
+            %auxquadrant2= cross(vetor12,vj);
+            auxquadrant2= [vetor12(2)*vj(3)-vetor12(3)*vj(2),vetor12(3)*vj(1)-vetor12(1)*vj(3),vetor12(1)*vj(2)-vetor12(2)*vj(1)];
+            
             % evita que aparição de numeros complexos
-            if dot(vi,vetor12)/(norm(vi)*norm(vetor12))>1 && abs(1-dot(vi,vetor12)/(norm(vi)*norm(vetor12)))<1e-10
+            if (vi*vetor12)/(norm(vi)*norm(vetor12))>1 && abs(1-(vi*vetor12)/(norm(vi)*norm(vetor12)))<1e-10
                 % calculo do theta1
                 thetarel1=acos(1);
             else
-                thetarel1=acos( dot(vi,vetor12)/(norm(vi)*norm(vetor12)));
+                thetarel1=acos((vi*vetor12)/(norm(vi)*norm(vetor12)));
                 
             end
             if ((sign(auxquadrant1(1,3))==sign(auxquadrant2(1,3)) && (abs(auxquadrant1(1,3))>1e-16 || abs(auxquadrant2(1,3))>1e-16))||(sign(auxquadrant1(1,3))==0 && sign(auxquadrant2(1,3))>0)||...

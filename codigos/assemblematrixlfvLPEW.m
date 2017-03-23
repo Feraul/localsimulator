@@ -39,9 +39,7 @@ else
             if nflag(nolef1,1)<200
                 I(lef,1)=I(lef,1)+ mobility(ifacont)*normcont*(parameter(1,1,ifacont)*nflag(nolef1,2));
             else
-                %auxvetor=1:(esurn2(nolef1+1)-esurn2(nolef1));
-                %auxvetor=auxvetor+esurn2(nolef1);
-                %auxesurn1=esurn1(auxvetor);
+                
                 for j=1:(esurn2(nolef1+1)-esurn2(nolef1))
                     
                     post_cont=esurn2(nolef1)+j;
@@ -55,9 +53,7 @@ else
                 I(lef,1)=I(lef,1)+ mobility(ifacont)*normcont*parameter(1,2,ifacont)*nflag(nolef2,2);
                 
             else
-                %auxvetor=1:(esurn2(nolef2+1)-esurn2(nolef2));
-                %auxvetor=auxvetor+esurn2(nolef2);
-                %auxesurn1=esurn1(auxvetor);
+                
                 for j=1:(esurn2(nolef2+1)-esurn2(nolef2))
                     
                     post_cont=esurn2(nolef2)+j;

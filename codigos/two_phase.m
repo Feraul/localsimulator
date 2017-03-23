@@ -87,7 +87,7 @@ no=2;
 %% Digite
 % monofasico ---> quando deseje rodar um problema de escoamento monof�sico ou
 % bifasico   ---> quando deseja rodar um problema de ecoamento bif�sico
-simu='bifasico';
+simu='monofasico';
 %% escolha o tipo de erro discreto que deseja usar
 % erromethod1 ---> erro utilizado por Gao e Wu 2010
 % erromethod2 --->  ''     ''     por Lipnikov et al 2010
@@ -102,7 +102,7 @@ erromethod='erromethod1';
 % lfvLPEW --> metodo linear based no metodo nao linear usando LPEW;
 % lfvHP --> metodo linear baseado no metodo nao linear usando pontos
 % harmonicos
-pmetodo='mpfad';
+pmetodo='lfvLPEW';
 %pmetodo='nlfvLPEW';
 %% metodo de interacao: iterpicard, iternewton, iterbroyden, itersecant,
 %iterfreejacobian,iterdiscretnewton, JFNK
@@ -140,7 +140,7 @@ kappa=1/3;
 % durlofsky
 % shuec
 % buckley
-benchmark='durlofsky';
+benchmark='shenyuan16';
 % nome do arquivo  unico para cada exemplo
 namefile='Report_Production_Mesh_lamine_LFVHP.dat';
 % escreve sobre o arquivo criado
@@ -154,7 +154,7 @@ auxflag=202;
 %% adequacao das permeabilidades segundo o bechmark
 [elem,kmap,normKmap,solanal,bedge,fonte,velanal]=adequapermeab(benchmark, kmap,elem,bedge);
 sat=ones(size(elem,1),1);
-postprocessor(solanal,sat,1);
+%postprocessor(solanal,sat,1);
 
 %% pre-precessador-saturacao
 [N,F,V,weightLS,esuel1,esuel_coord,A,bound,S_old,S_cont]=presaturation(wells);
