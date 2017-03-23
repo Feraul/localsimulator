@@ -20,10 +20,10 @@ else
 end
 vetorth1=T(k,:)-Qo;
 %Determinação dos ângulos:
-ve1(k)=acos(dot(-vetorth1,vetor1)/(norm(vetor1)*norm(vetorth1))); % revisar esses signos
-ve2(k)=acos(dot(-vetorth2,-vetor1)/(norm(vetor1)*norm(vetorth2)));
-theta2(k)=acos(dot(v0,vetorth2)/(norm(v0)*norm(vetorth2)));
-theta1(k)=acos(dot(v0,vetorth1)/(norm(v0)*norm(vetorth1)));
+ve1(k)=acos((-vetorth1*vetor1')/(norm(vetor1)*norm(vetorth1))); % revisar esses signos
+ve2(k)=acos((-vetorth2*(-vetor1)')/(norm(vetor1)*norm(vetorth2)));
+theta2(k)=acos((v0*vetorth2')/(norm(v0)*norm(vetorth2)));
+theta1(k)=acos((v0*vetorth1')/(norm(v0)*norm(vetorth1)));
 end
 
 end

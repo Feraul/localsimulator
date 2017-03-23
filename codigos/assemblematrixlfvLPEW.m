@@ -100,9 +100,7 @@ for iface=1:size(inedge,1)
     % contribuições esquerda
     % termo 1
     if nflag(auxnolef1,1)>200
-        %auxvetor=1:(esurn2(auxnolef1+1)-esurn2(auxnolef1));
-        %auxvetor=auxvetor+esurn2(auxnolef1);
-        %auxesurn1=esurn1(auxvetor);
+        
         for j=1:(esurn2(auxnolef1+1)-esurn2(auxnolef1))
             
             post_cont=esurn2(auxnolef1)+j;
@@ -124,9 +122,6 @@ for iface=1:size(inedge,1)
     % termo 2
     if nflag(auxnolef2,1)>200
         
-        %auxvetor=1:(esurn2(auxnolef2+1)-esurn2(auxnolef2));
-        %auxvetor=auxvetor+esurn2(auxnolef2);
-        %auxesurn1=esurn1(auxvetor);
         for j=1:(esurn2(auxnolef2+1)-esurn2(auxnolef2))
             
             post_cont=esurn2(auxnolef2)+j;
@@ -149,11 +144,7 @@ for iface=1:size(inedge,1)
     % contribuição do elemento a direita
     % termo 1
     if nflag(auxnorel1,1)>200
-        
-        
-        %auxvetor=1:(esurn2(auxnorel1+1)-esurn2(auxnorel1));
-        %auxvetor=auxvetor+esurn2(auxnorel1);
-        %auxesurn1=esurn1(auxvetor);
+       
         for j=1:(esurn2(auxnorel1+1)-esurn2(auxnorel1))
             
             post_cont=esurn2(auxnorel1)+j;
@@ -175,9 +166,6 @@ for iface=1:size(inedge,1)
     % termo 2
     if nflag(auxnorel2,1)>200
         
-         %auxvetor=1:(esurn2(auxnorel2+1)-esurn2(auxnorel2));
-         %auxvetor=auxvetor+esurn2(auxnorel2);
-         %auxesurn1=esurn1(auxvetor);
          for j=1:(esurn2(auxnorel2+1)-esurn2(auxnorel2))
              
              post_cont=esurn2(auxnorel2)+j;
