@@ -14,7 +14,7 @@
 
 //Do you have a mesh file? [y] ==> "yes"; [n] ==> "no"
 
-n
+y
 
 //If [y] write, immediately below, only the name of mesh file with
 //extension *.msh:
@@ -26,14 +26,14 @@ five_spot_Aligened_24_24.msh
 //IMPORTANT: if the file is puted into folder which contain the *.m
 //files, write in the statment below "no path".
 
-C:\Users\Fernando\Documents\GitHub\localsimulator\malhas
+C:\Users\Fernando\Documents\GitHub\localsimulator\codigos
 
 //If [n] write, immediately below, the path which conduct to
 //folder where the *.m files is:
 //IMPORTANT: gmsh.exe must be puted in this folder together with
 //the *.m files. Otherwise it does not work.
 
-C:\Users\Fernando\Documents\GitHub\localsimulator\malhas
+C:\Users\Fernando\Documents\GitHub\localsimulator\codigos
 
 //write the name of BASE geometry file WITHOUT extension *.geo.
 //This file can serve to several simulations. Each one may have
@@ -369,7 +369,7 @@ porosity.dat
 //declared below and so on.
 
 1
-201 0
+101 0
 
 //--------------------------------------------------------------------
 //Tratment of boundary points
@@ -386,7 +386,7 @@ porosity.dat
 //below.
 
 1
-201
+101
 
 //--------------------------------------------------------------------
 //----------------------- Convergence criteria -----------------------
@@ -464,6 +464,6 @@ vpi
 //if you write down "0" replacing the number of wells, will be not
 //necessary to erase the numbers below it. Keep it to reference.
 
-2
+0
 0 0 0 0.05 301 1 0 1 1
 0 1 1 0.05 0 0 501 1 1
