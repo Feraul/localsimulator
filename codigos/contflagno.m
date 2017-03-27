@@ -17,6 +17,11 @@ for ifacont=1:size(bedge,1)
             r=find(x==1);
             nflag(bedge(ifacont,1),2)=bcflag(r,2);
             nflag(bedge(ifacont,1),1)=bcflag(r,1);
+        case 'yuansheng2008'
+            
+            nflag(bedge(ifacont,1),1)=101;
+            nflag(bedge(ifacont,1),2)=0;
+            
         case 'crumpton'
             
             %%

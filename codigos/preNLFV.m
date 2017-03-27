@@ -1,7 +1,7 @@
 function [pointarmonic,parameter,gamma,p_old,tol,nit,er,nflagface,...
-    nflagno,weightDMP,Hesq,Kde,Kn,Kt,Ded,auxface]=preNLFV(kmap,N,metodoP,benchmark,interpol,bedge)
+    nflagno,weightDMP,Hesq,Kde,Kn,Kt,Ded,auxface]=preNLFV(kmap,N,metodoP,benchmark,bedge)
 global elem
-nflagno=0;
+
 nflagface=0;
 pointarmonic=0;
 parameter=0;
@@ -12,9 +12,7 @@ Kde=0;
 Kn=0;
 Kt=0;
 Ded=0;
-%% faces alrededor de um nó
-w=0;
-s=0;
+
 if strcmp(metodoP,'nlfvLPEW')
     %% calculo dos parametros ou constantes (ksi)
     % esta rutina estamos usando de 7/2/2016

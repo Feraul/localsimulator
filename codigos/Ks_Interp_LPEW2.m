@@ -51,10 +51,15 @@ j=esurn1(esurn2(ni)+k);
     
     %------------------------- Tensores ----------------------------------%
     
-    K1(1,1)= L22*kmap(elem(j,5),2);
-    K1(1,2)= L22*kmap(elem(j,5),3);
-    K1(2,1)= L22*kmap(elem(j,5),4);
-    K1(2,2)= L22*kmap(elem(j,5),5);
+%     K1(1,1)= L22*kmap(elem(j,5),2);
+%     K1(1,2)= L22*kmap(elem(j,5),3);
+%     K1(2,1)= L22*kmap(elem(j,5),4);
+%     K1(2,2)= L22*kmap(elem(j,5),5);
+    
+    K1(1,1)= kmap(elem(j,5),2);
+    K1(1,2)= kmap(elem(j,5),3);
+    K1(2,1)= kmap(elem(j,5),4);
+    K1(2,2)= kmap(elem(j,5),5);
     
     if (size(T,1)==size(O,1))&&(k==nec)
         

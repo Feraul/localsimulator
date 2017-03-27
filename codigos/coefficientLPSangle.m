@@ -47,7 +47,7 @@ for ifacont=1:size(bedge,1)
             % analiza que o K.n pertece ao primeiro quadrante
             auxquadrant1= cross(vj,ve2);
            
-            auxquadrant2= cross(ve2,vi); % Analizar .... !!!!!
+            auxquadrant2= cross(ve2,vi); 
             % evita que aparição de numeros complexos
             if (vi*ve2)/(norm(vi)*norm(ve2))>1 && abs(1-(vi*ve2)/(norm(vi)*norm(ve2)))<1e-10
                 % calculo do theta1

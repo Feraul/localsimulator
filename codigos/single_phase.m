@@ -88,6 +88,10 @@ no=2;
 % monofasico ---> quando deseje rodar um problema de escoamento monofï¿½sico ou
 % bifasico   ---> quando deseja rodar um problema de ecoamento bifï¿½sico
 simu='monofasico';
+%% Tipo de Problema
+% stationary   --> problema simple de diffusion sem tempo
+% nonstationary --> problema de diffusion com passo de tempo
+problemtype='nonstationary';
 %% escolha o tipo de erro discreto que deseja usar
 % erromethod1 ---> erro utilizado por Gao e Wu 2010
 % erromethod2 --->  ''     ''     por Lipnikov et al 2010
@@ -102,7 +106,7 @@ erromethod='erromethod1';
 % lfvLPEW --> metodo linear based no metodo nao linear usando LPEW;
 % lfvHP --> metodo linear baseado no metodo nao linear usando pontos
 % harmonicos
-pmetodo='lfvLPEW';
+pmetodo='mpfad';
 %pmetodo='nlfvLPEW';
 %% metodo de interacao: iterpicard, iternewton, iterbroyden, itersecant,
 %iterfreejacobian,iterdiscretnewton, JFNK
@@ -140,7 +144,7 @@ kappa=1/3;
 % durlofsky
 % shuec
 % buckley
-benchmark='shenyuan16';
+benchmark='yuansheng2008';
 % nome do arquivo  unico para cada exemplo
 namefile='Report_Production_Mesh_lamine_LFVHP.dat';
 % escreve sobre o arquivo criado
@@ -163,9 +167,15 @@ sat=ones(size(elem,1),1);
 %[elemphant,elembedge,face_bedge,peso,nu]=premultidimensional(N);
 
 %% pre-metodo-nao-linear
+% modificação para o problema "yuansheng2008"
+elem(:,5)=1;
 [pointarmonic,parameter,gamma,p_old,tol,nit,er,nflagface,nflagno,...
     weightDMP,Hesq,Kde,Kn,Kt,Ded,auxface]=preNLFV(kmap,N,pmetodo,benchmark,bedge);
 nflag=nflagno;
+for ielem=1:size(centelem,1)
+    
+p_old(ielem,1)=sin(centelem(ielem,1)*pi)*sin(centelem(ielem,2)*pi);
+end
 %[aroundface]=aroundfacelement(F,pointarmonic);
 %% IMPES
 % inicializando as variaveis
@@ -179,51 +189,73 @@ vpi = totaltime(2);
 t_old = 0;
 step=0;
 time2=0;
+p_anal=zeros(size(elem,1),1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+f_elem=0;
 
-while vpi_old < vpi
-%while t_old<totaltime(2)
+while t_old<totaltime(2)
+    p_anal=exp(-2*(pi^2)*t_old)*sin(pi*centelem(:,1)).*sin(pi*centelem(:,2));
     %% calculo das mobilidades
     [mobility] = mobilityface(S_old,nw,no,auxflag,S_cont,simu);
-
     %%  Calculo da Pressao Implicita pelos matodo lineares e nao-lineares
-    [p,errorelativo,flowrate,flowresult]=solverpressure(kmap,nflagface,nflagno,fonte, tol,...
+    [~,~,flowrate,flowresult]=solverpressure(kmap,nflagface,nflagno,fonte, tol,...
         nit,p_old,mobility,gamma,wells,S_old,V,nw,no,N,parameter,...
-        pmetodo,auxflag,interptype,Hesq, Kde, Kn, Kt, Ded,weightDMP,auxface,benchmark,iteration,nflag);
-
-    %% quando a velocidade e unitario
-    %[p,influx,q] = getknownflowrate;
-    %% calculo do fluxo fracional em cada elemento da malha
-    f_elem = fractionalflow(S_old,nw,no);
-
+        pmetodo,auxflag,interptype,Hesq, Kde, Kn, Kt, Ded,weightDMP,auxface,benchmark,iteration,nflag,problemtype);
+    
     %% caculo do passo de tempo
-    d_t=steptime(f_elem,S_old,flowrate,CFL,S_cont,auxflag,nw,no,order,problemtype);
-
-    %% calculo da saturacao explicito
-    S_old=solversaturation(S_old,flowrate,d_t,esuel1,wells,flowresult,...
-        f_elem,S_cont,weightLS,bound,smetodo,tordem,...
-        upsilon,kappa,nw,no,auxflag);
-
-    %% reporte de producao
-    [VPI,oilrecovery,cumulateoil,watercut]=reportproduction(S_old,...
-        wells,f_elem,cont,VPI,oilrecovery,cumulateoil,watercut,flowresult,d_t);
-
-    %% calculo o passo de vpi ou passo de tempo
-    %t_old=VPI
-
-    vpi_old=VPI(cont)
-
+    %d_t=steptime(f_elem,p_old,flowrate,CFL,S_cont,auxflag,nw,no,order,problemtype);
+    d_t=1/size(elem,1);
+    %% calculo da pressão explicito
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    RHS=zeros(size(elem,1),1);
+    
+    %% aproximação upwind
+    for iface = 1 : size(inedge,1)
+        
+        lef = inedge(iface,3); % elemento a esquerda
+        rel = inedge(iface,4); % elemento a direita
+        ve_mais = (flowrate(iface+size(bedge,1)) + abs(flowrate(iface+size(bedge,1))))/2;
+        ve_menos = (flowrate(iface+size(bedge,1)) - abs(flowrate(iface+size(bedge,1))))/2;
+        
+        RHS(rel) = RHS(rel) + ve_mais + ve_menos;
+        RHS(lef)  = RHS(lef)  - ve_mais - ve_menos;
+        
+    end
+    %% calculo dos RHS nos poços produtores
+    % calculo dos contribuições nos poços
+    
+    for ifacont = 1:size(bedge,1)
+        lef=bedge(ifacont,3);
+        if bedge(ifacont,5)==auxflag || bedge(ifacont,5)==102
+            
+            RHS(lef) = RHS(lef) -  flowrate(ifacont);
+        elseif bedge(ifacont,5)<200
+            
+            RHS(bedge(ifacont,3)) = RHS(bedge(ifacont,3)) - flowrate(ifacont);
+        end
+    end
+    
+    %% calculo da saturação
+    for i = 1:size(elem,1)
+        
+        p_new(i,1) = p_old(i,1) - (d_t*RHS(i))/(elemarea(i));
+        
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    t_old=t_old+d_t;
     %visualizacao
     %if vpi_old >= time2
     %   step = 1000*time2;
     %   postprocessor(p,S_old,step)
     %  time2 = time2 + 0.01;
     %end
-    % armezena a producao em arquivo .dat
-    fprintf(fid3,'%13.3e %13.3e %13.3e %13.3e \n',VPI(cont), ...
-       oilrecovery(cont),cumulateoil(cont),watercut(cont));
-    vpi_old=1e+40
-   %postprocessor(p,S_old,cont+1)
-   cont=cont+1
+    
+    postprocessor(p_anal,p_new,cont+1)
+    p_old=p_new;
+    cont=cont+1
 end
 fclose(fid3);
 %% calculo do erro

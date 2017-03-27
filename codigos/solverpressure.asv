@@ -29,13 +29,13 @@ switch problemtype
             [flowrate, flowresult]=flowrateTPFA(p_old,Kde,Kn,Hesq,nflag,mobility);
         else
             % interpolação nos nós ou faces
-%         [pinterp]=pressureinterp(p_old,nflagface,nflagno,w,s,auxflag,metodoP,parameter,weightDMP,mobility);
+        [pinterp]=pressureinterp(p_old,nflagface,nflagno,w,s,auxflag,metodoP,parameter,weightDMP,mobility);
         
         % calculo da matriz globlal inicial
-%         [M_old,RHS_old]=globalmatrix(p_old,pinterp,gamma,nflagface,nflagno,...
-%             parameter,kmap,fonte,metodoP,w,s,benchmark,weightDMP,auxface,wells,...
-%             mobility,Hesq, Kde, Kn, Kt, Ded,nflag);
-%         pressure=M_old\RHS_old;
+        [M_old,RHS_old]=globalmatrix(p_old,pinterp,gamma,nflagface,nflagno,...
+            parameter,kmap,fonte,metodoP,w,s,benchmark,weightDMP,auxface,wells,...
+            mobility,Hesq, Kde, Kn, Kt, Ded,nflag);
+        pressure=M_old\RHS_old;
             % calculo das vazões
             [flowrate,flowresult]=calflowrateMPFAD(p_old,w,s,Kde,Ded,Kn,Kt,Hesq,nflag,auxflag,mobility);
         end

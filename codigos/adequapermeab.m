@@ -5,6 +5,13 @@ vel=0;
 u=0;
 fonte=0;
 switch benchmark
+    case 'yuansheng2008'
+        for ielem=1:size(elem,1)
+            
+        kmap(ielem,:)=[ielem 1 0 0 1];
+        
+        end
+        K=kmap;
     case 'benchmar5_6'
         %% problem 5.6
         u=0;
