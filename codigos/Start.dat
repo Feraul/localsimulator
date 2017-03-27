@@ -14,7 +14,7 @@
 
 //Do you have a mesh file? [y] ==> "yes"; [n] ==> "no"
 
-n
+y
 
 //If [y] write, immediately below, only the name of mesh file with
 //extension *.msh:
@@ -26,14 +26,22 @@ five_spot_Aligened_8_8.msh
 //IMPORTANT: if the file is puted into folder which contain the *.m
 //files, write in the statment below "no path".
 
+<<<<<<< HEAD
 C:\Users\flc59_000\Documents\GitHub\localsimulator\codigos
+=======
+C:\Users\Fernando\Documents\GitHub\localsimulator\codigos
+>>>>>>> bf26584e21a045daf39b77b2788b31b790148565
 
 //If [n] write, immediately below, the path which conduct to
 //folder where the *.m files is:
 //IMPORTANT: gmsh.exe must be puted in this folder together with
 //the *.m files. Otherwise it does not work.
 
+<<<<<<< HEAD
 C:\Users\flc59_000\Documents\GitHub\localsimulator\codigos
+=======
+C:\Users\Fernando\Documents\GitHub\localsimulator\codigos
+>>>>>>> bf26584e21a045daf39b77b2788b31b790148565
 
 //write the name of BASE geometry file WITHOUT extension *.geo.
 //This file can serve to several simulations. Each one may have

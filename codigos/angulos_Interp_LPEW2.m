@@ -20,6 +20,7 @@ else
 end
 vetorth1=T(k,:)-Qo;
 %Determinação dos ângulos:
+% sem usar a função "dot" do matlab
 ve1(k)=acos((-vetorth1*vetor1')/(norm(vetor1)*norm(vetorth1))); % revisar esses signos
 ve2(k)=acos((-vetorth2*(-vetor1)')/(norm(vetor1)*norm(vetorth2)));
 theta2(k)=acos((v0*vetorth2')/(norm(v0)*norm(vetorth2)));
