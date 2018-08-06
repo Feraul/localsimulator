@@ -229,8 +229,8 @@ fclose(fid3);
 %% calculo do erro
 [erropressure,errovelocity]=errorateconv(solanal, p, velanal,flowrate,erromethod)
 %% calculo das pressoes maximas e minimas
-panalmax= max(p)
-panalmin= min(p)
+%panalmax= max(p)
+%panalmin= min(p)
 
 toc
 
